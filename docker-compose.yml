@@ -1,0 +1,59 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    restart: unless-stopped
+    logging:
+      driver: "none"
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongo-data:/data/db
+  predictor:
+    build: ./predictor
+    image: predictor:1.0
+    container_name: predictor
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    env_file:
+      - ./predictor/.env.docker
+    environment:
+      PORT: ${PREDICTOR_PORT}
+      ADDR: ${ADDR}
+    ports:
+      - "${PREDICTOR_PORT}:${PREDICTOR_PORT}"
+  acquisitor:
+    build: ./acquisitor
+    image: acquisitor:1.0
+    container_name: acquisitor
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    env_file:
+      - ./acquisitor/.env.docker
+    environment:
+      PORT: ${ACQUISITOR_PORT}
+      ADDR: ${ADDR}
+    ports:
+      - "${ACQUISITOR_PORT}:${ACQUISITOR_PORT}"
+  orquestrator:
+    build: ./orquestrator
+    image: orquestrator:1.0
+    container_name: orquestrator
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - acquisitor
+      - predictor
+    env_file:
+      - ./orquestrator/.env.docker
+    environment:
+      ACQUISITOR_URI: ${ACQUISITOR_ADDR}:${ACQUISITOR_PORT}
+      PREDICTOR_URI: ${PREDICTOR_ADDR}:${PREDICTOR_PORT}
+      PORT: ${ORQUESTRATOR_PORT}
+      ADDR: ${ADDR}
+    ports:
+      - "${ORQUESTRATOR_PORT}:${ORQUESTRATOR_PORT}"
+volumes:
+  mongo-data:
