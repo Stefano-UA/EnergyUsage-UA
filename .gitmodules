@@ -1,9 +1,9 @@
 [submodule "predictor"]
 	path = predictor
-	url = https://github.com/TheWisker/Predictor-UA
+	url = https://github.com/Stefano-UA/Predictor-UA
 [submodule "acquisitor"]
 	path = acquisitor
-	url = https://github.com/TheWisker/Acquisitor-UA
+	url = https://github.com/Stefano-UA/Acquisitor-UA
 [submodule "orquestrator"]
 	path = orquestrator
-	url = https://github.com/TheWisker/Orquestrator-UA
+	url = https://github.com/Stefano-UA/Orquestrator-UA
